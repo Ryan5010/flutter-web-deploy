@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: Despliegue Flutter Web
 
 on:
@@ -37,3 +38,44 @@ jobs:
             docker rm flutter_web || true
             docker run -d --name flutter_web -p 80:80 flutter-web-app
           EOF
+=======
+name: Despliegue Flutter Web
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Enviar código al servidor
+        run: |
+          tar czf app.tar.gz . --exclude='.git'
+          scp app.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/flutter-web-app.tar.gz
+
+      - name: Conectar y desplegar en el servidor
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            rm -rf ~/flutter-web-app
+            mkdir -p ~/flutter-web-app
+            tar xzf /tmp/flutter-web-app.tar.gz -C ~/flutter-web-app
+            cd ~/flutter-web-app
+            docker build -t flutter-web-app .
+            docker stop flutter_web || true
+            docker rm flutter_web || true
+            docker run -d --name flutter_web -p 80:80 flutter-web-app
+          EOF
+>>>>>>> 5ce0b1407bb003740088cabf81694057f77a02e2
