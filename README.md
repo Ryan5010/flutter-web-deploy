@@ -82,12 +82,3 @@ o en tu dominio si configuraste uno apuntando a ese servidor.
 
 ---
 
-## 🛟 ¿Problemas?
-
-- Asegúrate de que tu servidor tenga Docker instalado.
-- Verifica que el puerto 80 esté libre o actualizado en el workflow.
-- Revisa los logs de GitHub Actions si algo falla.
-
----
-
-¡Listo! Cada `push` a `main` es un despliegue automático. 🚀
