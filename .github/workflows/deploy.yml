@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 name: Despliegue Flutter Web
 
 on:
@@ -78,4 +77,3 @@ jobs:
             docker rm flutter_web || true
             docker run -d --name flutter_web -p 80:80 flutter-web-app
           EOF
->>>>>>> 5ce0b1407bb003740088cabf81694057f77a02e2
