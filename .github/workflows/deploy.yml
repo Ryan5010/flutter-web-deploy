@@ -18,16 +18,16 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Enviar código al servidor
         run: |
           tar czf app.tar.gz . --exclude='.git'
-          scp app.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/flutter-web-app.tar.gz
+          scp -P ${{ secrets.SSH_PORT }} app.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/flutter-web-app.tar.gz
 
       - name: Conectar y desplegar en el servidor
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             rm -rf ~/flutter-web-app
             mkdir -p ~/flutter-web-app
             tar xzf /tmp/flutter-web-app.tar.gz -C ~/flutter-web-app
